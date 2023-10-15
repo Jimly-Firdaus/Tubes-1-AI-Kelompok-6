@@ -1,10 +1,16 @@
 public class BotLocalSearch implements Bot {
     
     // private int[][] gameState;
+    private double temperature;
+
+    private double moveAcceptanceProbability(double currentScore, double newScore, double temperature) {
+        if (newScore > currentScore) {
+            return 1.0;
+        }
+        return Math.exp((newScore - currentScore) / temperature);
+    }
 
     public int[] move(char[][] board) {
-
-
         for (int i = 0; i < MAX_ROW_MOVEMENT_ALLOWED; i++) {
             for (int j = 0; j < MAX_COL_MOVEMENT_ALLOWED; j++) {
                 if (j == 0) {
@@ -16,7 +22,10 @@ public class BotLocalSearch implements Bot {
         }
 
         return new int[]{(int) (Math.random()*8), (int) (Math.random()*8)};
-        // return null;
+    }
+
+    public boolean isEmptyCoordinate(int i, int j, char[][] board) {
+        return (board[i][j] == ' ');
     }
 
 }
