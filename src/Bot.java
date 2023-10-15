@@ -4,5 +4,5 @@ public interface Bot {
     int MAX_COL_MOVEMENT_ALLOWED = 8;
 
     // move bot
-    public int[] move();
+    public int[] move(int[][] board);
 }
