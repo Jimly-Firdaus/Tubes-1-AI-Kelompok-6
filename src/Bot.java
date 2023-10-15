@@ -1,6 +1,8 @@
-public class Bot {
-    public int[] move() {
-        // create random move
-        return new int[]{(int) (Math.random()*8), (int) (Math.random()*8)};
-    }
+public interface Bot {
+
+    int MAX_ROW_MOVEMENT_ALLOWED = 8;
+    int MAX_COL_MOVEMENT_ALLOWED = 8;
+
+    // move bot
+    public int[] move();
 }
