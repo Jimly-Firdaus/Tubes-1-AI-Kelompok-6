@@ -356,7 +356,11 @@ public class OutputFrameController {
         char[][] buttonTexts = new char[ROW][COL];
         for (int i = 0; i < ROW; i++) {
             for (int j = 0; j < COL; j++) {
-                buttonTexts[i][j] = this.buttons[i][j].getText().charAt(0);
+                if (!this.buttons[i][j].getText().equals("")) {
+                    buttonTexts[i][j] = this.buttons[i][j].getText().charAt(0);
+                    continue;
+                }
+                buttonTexts[i][j] = this.buttons[i][j].getText();
             }
         }
         int[] botMove = this.bot.move(buttonTexts);
