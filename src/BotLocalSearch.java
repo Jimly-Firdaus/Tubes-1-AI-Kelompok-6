@@ -94,6 +94,21 @@ public class BotLocalSearch implements Bot {
 
     private char[][] patchNewChar(int i, int j, char[][] board, char character) {
         board[i][j] = character;
+
+        int[][] directions = { { -1, 0 }, { 0, -1 }, { 0, 1 }, { 1, 0 } };
+
+        for (int[] direction : directions) {
+            int newI = i + direction[0];
+            int newJ = j + direction[1];
+
+            // Change its adjacent too
+            if (newI >= 0 && newI < MAX_ROW_MOVEMENT_ALLOWED && newJ >= 0 && newJ < MAX_COL_MOVEMENT_ALLOWED) {
+                if (board[newI][newJ] != character && board[newI][newJ] != ' ') {
+                    board[newI][newJ] = character;
+                }
+            }
+        }
+
         return board;
     }
 }
