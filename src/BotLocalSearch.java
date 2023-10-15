@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
@@ -7,8 +8,8 @@ public class BotLocalSearch implements Bot {
     private double temperature;
 
     // TODO: change this to appropriate value
-    private final double MOVE_THRESHOLD_PROBABILITY = 0.1;
-    private final double TEMPERATURE_RATE_DECREASE = 0.1;
+    private final double MOVE_THRESHOLD_PROBABILITY = 0.5;
+    private final double TEMPERATURE_RATE_DECREASE = 0.95;
 
     public BotLocalSearch(char givenChar) {
         this.botChar = givenChar;
@@ -18,10 +19,12 @@ public class BotLocalSearch implements Bot {
     }
 
     private double moveAcceptanceProbability(double currentScore, double newScore, double temperature) {
-        if (newScore > currentScore) {
+        if (newScore > currentScore + 1) {
             return 1.0;
         }
-        return Math.exp((newScore - currentScore) / temperature);
+        System.out.println(Math.exp((-1) * (newScore - currentScore) / temperature));
+        System.out.println("T: " + this.temperature);
+        return Math.exp((-1) * (newScore - currentScore) / temperature);
     }
 
     private int evaluate(char[][] checkedBoard, char checkChar) {
@@ -38,16 +41,16 @@ public class BotLocalSearch implements Bot {
     }
 
     public int[] move(char[][] board) {
-        for (int i = 0; i < MAX_ROW_MOVEMENT_ALLOWED; i++) {
-            for (int j = 0; j < MAX_COL_MOVEMENT_ALLOWED; j++) {
-                if (j == 0) {
-                    System.out.print("| ");
-                }
-                System.out.print(board[i][j] + " | ");
-            }
-            System.out.println("\n---------------------------------");
-        }
-        System.out.println();
+//        for (int i = 0; i < MAX_ROW_MOVEMENT_ALLOWED; i++) {
+//            for (int j = 0; j < MAX_COL_MOVEMENT_ALLOWED; j++) {
+//                if (j == 0) {
+//                    System.out.print("| ");
+//                }
+//                System.out.print(board[i][j] + " | ");
+//            }
+//            System.out.println("\n---------------------------------");
+//        }
+//        System.out.println();
 
         int currentScore = this.evaluate(board, this.botChar);
         List<int[]> successors = new ArrayList<int[]>();
@@ -71,18 +74,27 @@ public class BotLocalSearch implements Bot {
             int evaluation = this.evaluate(modifiedBoard, this.botChar);
 
             // TODO: change this to appropriate value
-            this.temperature -= this.TEMPERATURE_RATE_DECREASE;
+            this.temperature *= this.TEMPERATURE_RATE_DECREASE;
 
             // if found good neighbor
-            if (evaluation > currentScore)
+            if (evaluation > currentScore + 1) {
+                System.out.println("eval: "+ evaluation);
+                System.out.println("cur: " + currentScore);
+                System.out.println("NYAMMM");
                 return successors.get(randomPoint);
+            }
 
             // if found bad neighbor
             if (this.moveAcceptanceProbability(currentScore, evaluation,
                     this.temperature) > this.MOVE_THRESHOLD_PROBABILITY) {
+                System.out.println("eval: "+ evaluation);
+                System.out.println("cur: " + currentScore);
+                System.out.println("Baddie");
                 return successors.get(randomPoint);
             }
         }
+
+        System.out.println("Random HEHE");
 
         int randomPoint = rand.nextInt(successors.size());
         return successors.get(randomPoint);
@@ -93,7 +105,9 @@ public class BotLocalSearch implements Bot {
     }
 
     private char[][] patchNewChar(int i, int j, char[][] board, char character) {
-        board[i][j] = character;
+//        char[][] newBoard = new char[board.length][board[0].length];
+        char[][] newBoard = Arrays.stream(board).map(char[]::clone).toArray(char[][]::new);
+        newBoard[i][j] = character;
 
         int[][] directions = { { -1, 0 }, { 0, -1 }, { 0, 1 }, { 1, 0 } };
 
@@ -103,12 +117,24 @@ public class BotLocalSearch implements Bot {
 
             // Change its adjacent too
             if (newI >= 0 && newI < MAX_ROW_MOVEMENT_ALLOWED && newJ >= 0 && newJ < MAX_COL_MOVEMENT_ALLOWED) {
-                if (board[newI][newJ] != character && board[newI][newJ] != ' ') {
-                    board[newI][newJ] = character;
+                if (newBoard[newI][newJ] != character && newBoard[newI][newJ] != ' ') {
+                    newBoard[newI][newJ] = character;
                 }
             }
         }
 
-        return board;
+        for (int i1 = 0; i1 < MAX_ROW_MOVEMENT_ALLOWED; i1++) {
+            for (int j1 = 0; j1 < MAX_COL_MOVEMENT_ALLOWED; j1++) {
+                if (j1 == 0) {
+                    System.out.print("| ");
+                }
+                System.out.print(newBoard[i1][j1] + " | ");
+            }
+            System.out.println("\n---------------------------------");
+        }
+        System.out.println();
+
+
+        return newBoard;
     }
 }
