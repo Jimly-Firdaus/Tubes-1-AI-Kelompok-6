@@ -77,7 +77,7 @@ public class OutputFrameController {
         this.isBotFirst = isBotFirst;
 
         // Start bot
-        this.bot = new BotLocalSearch();
+        this.bot = new BotLocalSearch('O');
         this.playerXTurn = !isBotFirst;
         if (this.isBotFirst) {
             this.moveBot();
