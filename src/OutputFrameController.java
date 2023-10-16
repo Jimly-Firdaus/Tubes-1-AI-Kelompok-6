@@ -81,8 +81,8 @@ public class OutputFrameController {
         // for Bot vs Bot
         if (allBotMode) {
             // instantiate both bot here
-            this.bot = new Bot();
-            this.extraBot = new Bot();
+            this.bot = new BotLocalSearch('O');
+            this.extraBot = new BotLocalSearch('O');
             if (this.isBotFirst) {
                 this.moveBot();
             } else {
@@ -91,9 +91,9 @@ public class OutputFrameController {
         } else {
             // instantiate bot by type
             if (botType.equals("Local Search")) {
-                this.bot = new Bot(); // Local Search bot
+                this.bot = new BotLocalSearch('O'); // Local Search bot
             } else {
-                this.bot = new Bot(); // Minimax bot
+                this.bot = new BotLocalSearch('O'); // Minimax bot
             }
             this.playerXTurn = !isBotFirst;
             if (this.isBotFirst) {
