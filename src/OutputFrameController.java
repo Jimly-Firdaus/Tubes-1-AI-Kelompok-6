@@ -12,6 +12,9 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.RowConstraints;
+import javafx.application.Platform;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -209,13 +212,15 @@ public class OutputFrameController {
 
                 if (isBotFirst && this.roundsLeft == 0) {
                     this.endOfGame();
+                    return; // this will prevent bot vs bot to continuing to play
                 }
 
                 // Bot's turn
                 if (this.allBotMode) {
-                    TimeUnit.SECONDS.sleep(1);
+                    this.wait(1, this::moveBot); // add 1 second delay to avoid flickers
+                } else {
+                    this.moveBot();
                 }
-                this.moveBot();
             } else {
                 this.playerXBoxPane.setStyle("-fx-background-color: #90EE90; -fx-border-color: #D3D3D3;");
                 this.playerOBoxPane.setStyle("-fx-background-color: WHITE; -fx-border-color: #D3D3D3;");
@@ -233,11 +238,11 @@ public class OutputFrameController {
 
                 if (!isBotFirst && this.roundsLeft == 0) { // Game has terminated.
                     this.endOfGame(); // Determine & announce the winner.
+                    return; // this will prevent bot vs bot to continuing to play
                 }
 
                 if (this.allBotMode) {
-                    TimeUnit.SECONDS.sleep(1);
-                    this.moveExtraBot();
+                    this.wait(1, this::moveBot); // add 1 second delay to avoid flickers
                 }
             }
         }
@@ -374,46 +379,56 @@ public class OutputFrameController {
     }
 
     private void moveBot() {
-        char[][] buttonTexts = new char[ROW][COL];
-        for (int i = 0; i < ROW; i++) {
-            for (int j = 0; j < COL; j++) {
-                String text = this.buttons[i][j].getText();
-                buttonTexts[i][j] = text.isEmpty() ? ' ' : text.charAt(0);
+        Platform.runLater(() -> {
+            char[][] buttonTexts = new char[ROW][COL];
+            for (int i = 0; i < ROW; i++) {
+                for (int j = 0; j < COL; j++) {
+                    String text = this.buttons[i][j].getText();
+                    buttonTexts[i][j] = text.isEmpty() ? ' ' : text.charAt(0);
+                }
             }
-        }
 
-        int[] botMove = this.bot.move(buttonTexts);
-        int i = botMove[0];
-        int j = botMove[1];
+            int[] botMove = this.bot.move(buttonTexts);
+            int i = botMove[0];
+            int j = botMove[1];
 
-        if (!this.buttons[i][j].getText().equals("")) {
-            new Alert(Alert.AlertType.ERROR, "Bot Invalid Coordinates. Exiting.").showAndWait();
-            System.exit(1);
-            return;
-        }
+            if (!this.buttons[i][j].getText().equals("")) {
+                new Alert(Alert.AlertType.ERROR, "Bot Invalid Coordinates. Exiting.").showAndWait();
+                System.exit(1);
+                return;
+            }
 
-        this.selectedCoordinates(i, j);
+            this.selectedCoordinates(i, j);
+        });
     }
 
     private void moveExtraBot() {
-        char[][] buttonTexts = new char[ROW][COL];
-        for (int i = 0; i < ROW; i++) {
-            for (int j = 0; j < COL; j++) {
-                String text = this.buttons[i][j].getText();
-                buttonTexts[i][j] = text.isEmpty() ? ' ' : text.charAt(0);
+        Platform.runLater(() -> {
+            char[][] buttonTexts = new char[ROW][COL];
+            for (int i = 0; i < ROW; i++) {
+                for (int j = 0; j < COL; j++) {
+                    String text = this.buttons[i][j].getText();
+                    buttonTexts[i][j] = text.isEmpty() ? ' ' : text.charAt(0);
+                }
             }
-        }
 
-        int[] botMove = this.extraBot.move(buttonTexts);
-        int i = botMove[0];
-        int j = botMove[1];
+            int[] botMove = this.extraBot.move(buttonTexts);
+            int i = botMove[0];
+            int j = botMove[1];
 
-        if (!this.buttons[i][j].getText().equals("")) {
-            new Alert(Alert.AlertType.ERROR, "Bot Invalid Coordinates. Exiting.").showAndWait();
-            System.exit(1);
-            return;
-        }
+            if (!this.buttons[i][j].getText().equals("")) {
+                new Alert(Alert.AlertType.ERROR, "Bot Invalid Coordinates. Exiting.").showAndWait();
+                System.exit(1);
+                return;
+            }
 
-        this.selectedCoordinates(i, j);
+            this.selectedCoordinates(i, j);
+        });
+    }
+
+    private void wait(int seconds, Runnable action) {
+        PauseTransition pause = new PauseTransition(Duration.seconds(seconds));
+        pause.setOnFinished(event -> action.run());
+        pause.play();
     }
 }
