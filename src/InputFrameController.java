@@ -23,7 +23,7 @@ import java.io.IOException;
 public class InputFrameController{
 
     public CheckBox isBotFirst;
-    public Checkbox allBotMode;
+    public CheckBox allBotMode;
     @FXML
     private TextField player1;
 
@@ -90,7 +90,7 @@ public class InputFrameController{
 
             // Get controller of output frame and pass input including player names and number of rounds chosen.
             OutputFrameController outputFC = loader.getController();
-            outputFC.getInput(this.player1.getText(), this.player2.getText(), this.numberOfRounds.getValue(), this.isBotFirst.isSelected(), this.botType, this.allBotMode);
+            outputFC.getInput(this.player1.getText(), this.player2.getText(), this.numberOfRounds.getValue(), this.isBotFirst.isSelected(), this.botType.getValue(), this.allBotMode.isSelected());
 
             // Open the new frame.
             Stage secondaryStage = new Stage();
