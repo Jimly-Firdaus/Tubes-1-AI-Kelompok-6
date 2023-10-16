@@ -32,6 +32,20 @@
             </Label>
             <ComboBox fx:id="numberOfRounds" GridPane.rowIndex="2" GridPane.columnIndex="1" maxWidth="Infinity" />
 
+             <Label text="Bot Type: " GridPane.rowIndex="2" GridPane.columnIndex="0">
+                <font>
+                    <Font name="Arial Bold" size="12"/>
+                </font>
+            </Label>
+            <ComboBox fx:id="botType" GridPane.rowIndex="2" GridPane.columnIndex="1" maxWidth="Infinity" />
+
+            <Label text="Bot vs Bot? " GridPane.rowIndex="3" GridPane.columnIndex="0">
+                <font>
+                    <Font name="Arial Bold" size="12"/>
+                </font>
+            </Label>
+            <CheckBox fx:id="allBotMode" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+
             <Label text="Bot goes first: " GridPane.rowIndex="3" GridPane.columnIndex="0">
                 <font>
                     <Font name="Arial Bold" size="12"/>
