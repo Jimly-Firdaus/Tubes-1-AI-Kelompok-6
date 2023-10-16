@@ -7,14 +7,11 @@ public class BotLocalSearch implements Bot {
     private char botChar;
     private double temperature;
 
-    // TODO: change this to appropriate value
     private final double MOVE_THRESHOLD_PROBABILITY = 0.5;
-    private final double TEMPERATURE_RATE_DECREASE = 0.95;
+    private final double TEMPERATURE_RATE_DECREASE = 0.9;
 
     public BotLocalSearch(char givenChar) {
         this.botChar = givenChar;
-
-        // TODO: change this to appropriate value
         this.temperature = 2.0;
     }
 
@@ -41,16 +38,17 @@ public class BotLocalSearch implements Bot {
     }
 
     public int[] move(char[][] board) {
-//        for (int i = 0; i < MAX_ROW_MOVEMENT_ALLOWED; i++) {
-//            for (int j = 0; j < MAX_COL_MOVEMENT_ALLOWED; j++) {
-//                if (j == 0) {
-//                    System.out.print("| ");
-//                }
-//                System.out.print(board[i][j] + " | ");
-//            }
-//            System.out.println("\n---------------------------------");
-//        }
-//        System.out.println();
+        long startTime = System.currentTimeMillis(); // get the start time
+        // for (int i = 0; i < MAX_ROW_MOVEMENT_ALLOWED; i++) {
+        // for (int j = 0; j < MAX_COL_MOVEMENT_ALLOWED; j++) {
+        // if (j == 0) {
+        // System.out.print("| ");
+        // }
+        // System.out.print(board[i][j] + " | ");
+        // }
+        // System.out.println("\n---------------------------------");
+        // }
+        // System.out.println();
 
         int currentScore = this.evaluate(board, this.botChar);
         List<int[]> successors = new ArrayList<int[]>();
@@ -67,18 +65,23 @@ public class BotLocalSearch implements Bot {
         Random rand = new Random();
 
         while (this.temperature > 0) {
+            // 5 seconds limit
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            if (elapsedTime >= 5000) {
+                break;
+            }
+
             int randomPoint = rand.nextInt(successors.size());
             char[][] modifiedBoard = this.patchNewChar(successors.get(randomPoint)[0], successors.get(randomPoint)[1],
                     board, this.botChar);
 
             int evaluation = this.evaluate(modifiedBoard, this.botChar);
 
-            // TODO: change this to appropriate value
             this.temperature *= this.TEMPERATURE_RATE_DECREASE;
 
             // if found good neighbor
             if (evaluation > currentScore + 1) {
-                System.out.println("eval: "+ evaluation);
+                System.out.println("eval: " + evaluation);
                 System.out.println("cur: " + currentScore);
                 System.out.println("NYAMMM");
                 return successors.get(randomPoint);
@@ -87,7 +90,7 @@ public class BotLocalSearch implements Bot {
             // if found bad neighbor
             if (this.moveAcceptanceProbability(currentScore, evaluation,
                     this.temperature) > this.MOVE_THRESHOLD_PROBABILITY) {
-                System.out.println("eval: "+ evaluation);
+                System.out.println("eval: " + evaluation);
                 System.out.println("cur: " + currentScore);
                 System.out.println("Baddie");
                 return successors.get(randomPoint);
@@ -96,7 +99,7 @@ public class BotLocalSearch implements Bot {
 
         System.out.println("Random HEHE");
 
-        int randomPoint = rand.nextInt(successors.size());
+        int randomPoint = rand.nextInt((successors.size() > 0) ? successors.size() : 1);
         return successors.get(randomPoint);
     }
 
@@ -105,7 +108,6 @@ public class BotLocalSearch implements Bot {
     }
 
     private char[][] patchNewChar(int i, int j, char[][] board, char character) {
-//        char[][] newBoard = new char[board.length][board[0].length];
         char[][] newBoard = Arrays.stream(board).map(char[]::clone).toArray(char[][]::new);
         newBoard[i][j] = character;
 
@@ -133,7 +135,6 @@ public class BotLocalSearch implements Bot {
             System.out.println("\n---------------------------------");
         }
         System.out.println();
-
 
         return newBoard;
     }
