@@ -80,7 +80,7 @@ public class OutputFrameController {
         this.roundsLeft = Integer.parseInt(rounds);
         this.isBotFirst = isBotFirst;
         this.allBotMode = allBotMode;
-
+        this.playerXTurn = !isBotFirst;
         // for Bot vs Bot
         if (allBotMode) {
             // instantiate both bot here
@@ -97,12 +97,12 @@ public class OutputFrameController {
         } else {
             // instantiate bot by type
             if (botType.equals("Local Search")) {
-                this.bot = new Bot(); // Local Search bot
+                this.bot = new BotLocalSearch('O'); // Local Search bot
             } else {
                 // TODO: change this to minimax bot instead
                 this.bot = new BotMinimaxAlphaBethaPruning('O', 'X'); // Minimax bot
             }
-            this.playerXTurn = !isBotFirst;
+
             if (this.isBotFirst) {
                 this.moveBot();
             }
