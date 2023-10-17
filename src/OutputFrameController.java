@@ -87,7 +87,7 @@ public class OutputFrameController {
             this.bot = new BotLocalSearch('O');
 
             // TODO: change this to minimax bot instead
-            this.extraBot = new BotLocalSearch('X');
+            this.extraBot = new BotMinimaxAlphaBethaPruning('X', 'O');
 
             if (this.isBotFirst) {
                 this.moveBot();
@@ -100,7 +100,7 @@ public class OutputFrameController {
                 this.bot = new BotLocalSearch('O'); // Local Search bot
             } else {
                 // TODO: change this to minimax bot instead
-                this.bot = new BotLocalSearch('O'); // Minimax bot
+                this.bot = new BotMinimaxAlphaBethaPruning('X', 'O'); // Minimax bot
             }
             this.playerXTurn = !isBotFirst;
             if (this.isBotFirst) {
