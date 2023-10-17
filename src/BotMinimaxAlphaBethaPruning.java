@@ -3,7 +3,7 @@ import java.util.PriorityQueue;
 public class BotMinimaxAlphaBethaPruning implements Bot {
     private char botChar;
     private char nonBotChar;
-    private int minDepth = 5;
+    private int minDepth = 3;
     private int maxDepth = 10;
     private double numberOfEmptyCoordinateInit = 0;
 
@@ -129,28 +129,32 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
         for (int i= 0; i < MAX_ROW_MOVEMENT_ALLOWED; i++){
             for(int j= 0; j<MAX_COL_MOVEMENT_ALLOWED; j++){
                 if(isEmptyCoordinate(i, j, checkBoard) && !emptyNeighbor(i, j, checkBoard)){
-                    checkBoard[i][j] = this.botChar;
                     if(countSurroundingEnemyTile(i, j, checkBoard) != 0){
+                        checkBoard[i][j] = this.botChar;
                         pq.add(new NodeQueueElement(countSurroundingEnemyTile(i, j, checkBoard), checkBoard, 0, false, alpha, beta, i, j));
                     }
                 }
             }
         }
-        System.out.println("This is empty validation" + pq.isEmpty());
+        System.out.println("This is empty validation " + pq.isEmpty());
         if(pq.isEmpty()){
             for (int i= 0; i < MAX_ROW_MOVEMENT_ALLOWED; i++){
-            for(int j= 0; j<MAX_COL_MOVEMENT_ALLOWED; j++){
-                if(isEmptyCoordinate(i, j, checkBoard)){
-                    checkBoard[i][j] = this.botChar;
-                    pq.add(new NodeQueueElement(countSurroundingEnemyTile(i, j, checkBoard), checkBoard, 0, false, alpha, beta, i, j));
+                for(int j= 0; j<MAX_COL_MOVEMENT_ALLOWED; j++){
+                    System.out.println(i + " " + j + " " + isEmptyCoordinate(i, j, checkBoard));
+                    if(isEmptyCoordinate(i, j, checkBoard)){
+                        checkBoard[i][j] = this.botChar;
+                        pq.add(new NodeQueueElement(countSurroundingEnemyTile(i, j, checkBoard), checkBoard, 0, false, alpha, beta, i, j));
+                    }
                 }
             }
         }
-        }
+
+        System.out.println("This is second empty validation " + pq.isEmpty());
         while (!pq.isEmpty()) {
             NodeQueueElement n = pq.poll();
 
             score = this.minimax(n.board, n.depth, n.isMaximizing, n.alpha, n.beta);
+            System.out.println(n.i + " " + n.j + " " + score);
 
             checkBoard[n.i][n.j] = ' ';
             if(score > bestScore){
@@ -303,6 +307,7 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
     public int[] move(char[][] board) {
         System.out.println("-----------------------------------Minimax---------------------------------");
         this.numberOfEmptyCoordinateInit = this.numberOfEmptyCoordinate(board);
+        System.out.println("This is maximum depth in certain state: " + this.maximumDepthInCertainState(board));
         Tuple<Integer, Integer> bestMove = this.bestMove(board);
         System.out.println("This is the best move: " + bestMove);
         return new int[] {bestMove.getFirst(), bestMove.getSecond()};
