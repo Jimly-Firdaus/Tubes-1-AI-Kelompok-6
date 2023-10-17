@@ -80,7 +80,7 @@ public class OutputFrameController {
         this.roundsLeft = Integer.parseInt(rounds);
         this.isBotFirst = isBotFirst;
         this.allBotMode = allBotMode;
-
+        this.playerXTurn = !isBotFirst;
         // for Bot vs Bot
         if (allBotMode) {
             // instantiate both bot here
@@ -102,7 +102,7 @@ public class OutputFrameController {
                 // TODO: change this to minimax bot instead
                 this.bot = new BotMinimaxAlphaBethaPruning('O', 'X'); // Minimax bot
             }
-            this.playerXTurn = !isBotFirst;
+
             if (this.isBotFirst) {
                 this.moveBot();
             }
