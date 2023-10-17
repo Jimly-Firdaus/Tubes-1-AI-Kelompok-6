@@ -92,6 +92,33 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
         return surroundingEnemyCount;
     }
 
+    private int surroundingNonEmptyTilesCount(int i, int j, char[][] board) {
+        int surroundingNonEmptyTilesCount = 0;
+
+        if (i != 0) {
+            if (!isEmptyCoordinate(i-1, j, board)) {
+                surroundingNonEmptyTilesCount++;
+            }
+        }
+        if (i != MAX_ROW_MOVEMENT_ALLOWED - 1) {
+            if (!isEmptyCoordinate(i+1, j, board)) {
+                surroundingNonEmptyTilesCount++;
+            }
+        }
+        if (j != 0) {
+            if (!isEmptyCoordinate(i, j-1, board)) {
+                surroundingNonEmptyTilesCount++;
+            }
+        }
+        if (j != MAX_COL_MOVEMENT_ALLOWED - 1) {
+            if (!isEmptyCoordinate(i, j+1, board)) {
+                surroundingNonEmptyTilesCount++;
+            }
+        }
+
+        return surroundingNonEmptyTilesCount;
+    }
+
     private Tuple<Integer, Integer> bestMove(char[][] checkBoard){
         int score= 0;
         int bestScore = Integer.MIN_VALUE;
@@ -109,10 +136,11 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
                 }
             }
         }
+        System.out.println("This is empty validation" + pq.isEmpty());
         if(pq.isEmpty()){
             for (int i= 0; i < MAX_ROW_MOVEMENT_ALLOWED; i++){
             for(int j= 0; j<MAX_COL_MOVEMENT_ALLOWED; j++){
-                if(isEmptyCoordinate(i, j, checkBoard) && !emptyNeighbor(i, j, checkBoard)){
+                if(isEmptyCoordinate(i, j, checkBoard)){
                     checkBoard[i][j] = this.botChar;
                     pq.add(new NodeQueueElement(countSurroundingEnemyTile(i, j, checkBoard), checkBoard, 0, false, alpha, beta, i, j));
                 }
@@ -127,7 +155,7 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
             checkBoard[n.i][n.j] = ' ';
             if(score > bestScore){
                 bestScore = score;
-                alpha = Math.max(alpha, score);
+                alpha = Math.max(alpha, bestScore);
                 if(beta <= alpha){
                     pq.clear();
                     break;
@@ -143,7 +171,6 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
 
     private int maximumDepthInCertainState(char[][] board){
         int result = (int) Math.floor(minDepth + (maxDepth - minDepth) * (1 - Math.min(1, Math.max(0, numberOfEmptyCoordinateInit / (MAX_COL_MOVEMENT_ALLOWED * MAX_ROW_MOVEMENT_ALLOWED)))));
-        System.out.println(result);
         return result;
     }
 
@@ -159,8 +186,26 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
         return numberOfEmptyCoordinate;
     }
 
+    private int nonChangeablePoints (char[][]board) {
+        int nonChangeableTilesCountBot = 0;
+        int nonChangeableTilesCountEnemy = 0;
+        for (int i= 0; i < MAX_ROW_MOVEMENT_ALLOWED; i++){
+            for (int j= 0; j < MAX_COL_MOVEMENT_ALLOWED; j++){
+                int numberBot = this.surroundingNonEmptyTilesCount(i, j, board);
+                if(numberBot == 4){
+                    if(board[i][j] == this.botChar){
+                        nonChangeableTilesCountBot += 1;
+                    } else if (board[i][j] == this.nonBotChar){
+                        nonChangeableTilesCountEnemy += 1;
+                    }
+                }
+            }
+        }
+        return (nonChangeableTilesCountBot - nonChangeableTilesCountEnemy);
+    }
+
     private int evaluateScore(char[][] board){
-        return (this.getBotScore(board) - this.getEnemyScore(board));
+        return ((this.getBotScore(board) - this.getEnemyScore(board)) + this.nonChangeablePoints(board));
     }
 
     private int getEnemyScore(char[][] board){
@@ -217,7 +262,7 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
                         int score = minimax(board, depth+1, false, alpha, beta);
                         board[i][j] = ' ';
                         bestScore = Math.max(score, bestScore);
-                        alpha = Math.max(alpha, score);
+                        alpha = Math.max(alpha, bestScore);
                         if(beta <= alpha){
                             prunning = true;
                             break;
@@ -239,7 +284,7 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
                         int score = minimax(board, depth+1, true, alpha, beta);
                         board[i][j] = ' ';
                         bestScore = Math.min(score, bestScore);
-                        beta = Math.min(beta, score);
+                        beta = Math.min(beta, bestScore);
                         if(beta <= alpha){
                             prunning = true;
                             break;
@@ -256,9 +301,10 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
 
     @Override
     public int[] move(char[][] board) {
+        System.out.println("-----------------------------------Minimax---------------------------------");
         this.numberOfEmptyCoordinateInit = this.numberOfEmptyCoordinate(board);
         Tuple<Integer, Integer> bestMove = this.bestMove(board);
-        System.out.println(bestMove);
+        System.out.println("This is the best move: " + bestMove);
         return new int[] {bestMove.getFirst(), bestMove.getSecond()};
     }
     
