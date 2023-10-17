@@ -100,7 +100,7 @@ public class OutputFrameController {
                 this.bot = new Bot(); // Local Search bot
             } else {
                 // TODO: change this to minimax bot instead
-                this.bot = new BotMinimaxAlphaBethaPruning('X', 'O'); // Minimax bot
+                this.bot = new BotMinimaxAlphaBethaPruning('O', 'X'); // Minimax bot
             }
             this.playerXTurn = !isBotFirst;
             if (this.isBotFirst) {
@@ -246,7 +246,7 @@ public class OutputFrameController {
                 }
 
                 if (this.allBotMode) {
-                    this.wait(1, this::moveBot); // add 1 second delay to avoid flickers
+                    this.wait(1, this::moveExtraBot); // add 1 second delay to avoid flickers
                 }
             }
         }
