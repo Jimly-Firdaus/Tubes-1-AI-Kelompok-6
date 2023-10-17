@@ -3,8 +3,8 @@ import java.util.PriorityQueue;
 public class BotMinimaxAlphaBethaPruning implements Bot {
     private char botChar;
     private char nonBotChar;
-    private int minDepth = 3;
-    private int maxDepth = 20;
+    private int minDepth = 5;
+    private int maxDepth = 10;
     private double numberOfEmptyCoordinateInit = 0;
 
     public BotMinimaxAlphaBethaPruning(char givenChar, char nonBotChar){
@@ -98,41 +98,27 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
         int alpha = Integer.MIN_VALUE;
         int beta = Integer.MAX_VALUE;
         Tuple<Integer, Integer> move = new Tuple<>(-1,-1);
-//        boolean prunning = false;
-
         PriorityQueue<NodeQueueElement> pq = new PriorityQueue<>();
         for (int i= 0; i < MAX_ROW_MOVEMENT_ALLOWED; i++){
             for(int j= 0; j<MAX_COL_MOVEMENT_ALLOWED; j++){
                 if(isEmptyCoordinate(i, j, checkBoard) && !emptyNeighbor(i, j, checkBoard)){
                     checkBoard[i][j] = this.botChar;
-
-//                    cek tile lawan
-
-
-                    pq.add(new NodeQueueElement(countSurroundingEnemyTile(i, j, checkBoard), checkBoard, 0, false, alpha, beta, i, j));
-
-//                    enqueue
-//                    score = this.minimax(checkBoard, 0, false, alpha, beta);
-//
-//                    checkBoard[i][j] = ' ';
-//                    if(score > bestScore){
-//                        bestScore = score;
-//                        alpha = Math.max(alpha, score);
-//                        if(beta <= alpha){
-//                            prunning = true;
-//                            break;
-//                        }else{
-//                            move.setFirst(i);
-//                            move.setSecond(j);
-//                        }
-//                    }
+                    if(countSurroundingEnemyTile(i, j, checkBoard) != 0){
+                        pq.add(new NodeQueueElement(countSurroundingEnemyTile(i, j, checkBoard), checkBoard, 0, false, alpha, beta, i, j));
+                    }
                 }
             }
-//            if(prunning){
-//                break;
-//            }
         }
-//        pop queue disini
+        if(pq.isEmpty()){
+            for (int i= 0; i < MAX_ROW_MOVEMENT_ALLOWED; i++){
+            for(int j= 0; j<MAX_COL_MOVEMENT_ALLOWED; j++){
+                if(isEmptyCoordinate(i, j, checkBoard) && !emptyNeighbor(i, j, checkBoard)){
+                    checkBoard[i][j] = this.botChar;
+                    pq.add(new NodeQueueElement(countSurroundingEnemyTile(i, j, checkBoard), checkBoard, 0, false, alpha, beta, i, j));
+                }
+            }
+        }
+        }
         while (!pq.isEmpty()) {
             NodeQueueElement n = pq.poll();
 
@@ -156,13 +142,9 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
     }
 
     private int maximumDepthInCertainState(char[][] board){
-        // System.out.println("This is maximum depth");
-        // System.out.println(this.numberOfEmptyCoordinateInit);
-        // System.out.println((MAX_COL_MOVEMENT_ALLOWED*MAX_ROW_MOVEMENT_ALLOWED));
-        // System.out.println(this.numberOfEmptyCoordinateInit/(MAX_COL_MOVEMENT_ALLOWED*MAX_ROW_MOVEMENT_ALLOWED));
-        // System.out.println((this.minDepth + (this.maxDepth - this.minDepth) * (this.numberOfEmptyCoordinateInit/(MAX_COL_MOVEMENT_ALLOWED*MAX_ROW_MOVEMENT_ALLOWED))));
-        // return ((int) Math.floor(this.minDepth + (this.maxDepth - this.minDepth) *  (this.numberOfEmptyCoordinateInit/(MAX_COL_MOVEMENT_ALLOWED*MAX_ROW_MOVEMENT_ALLOWED))));
-        return 3;
+        int result = (int) Math.floor(minDepth + (maxDepth - minDepth) * (1 - Math.min(1, Math.max(0, numberOfEmptyCoordinateInit / (MAX_COL_MOVEMENT_ALLOWED * MAX_ROW_MOVEMENT_ALLOWED)))));
+        System.out.println(result);
+        return result;
     }
 
     private int numberOfEmptyCoordinate(char[][] board){
@@ -221,9 +203,7 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
     }
 
     private int minimax(char[][] board, int depth, boolean isMaximizing, int alpha, int beta){
-        System.out.println("minimax");
         if(isFullyFilled(board) || depth == this.maximumDepthInCertainState(board)){
-            System.out.println(this.evaluateScore(board));
             return this.evaluateScore(board);
         }
 
@@ -280,7 +260,6 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
         Tuple<Integer, Integer> bestMove = this.bestMove(board);
         System.out.println(bestMove);
         return new int[] {bestMove.getFirst(), bestMove.getSecond()};
-        // return new int[] {1, 1};
     }
     
 }
