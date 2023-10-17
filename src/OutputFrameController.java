@@ -80,14 +80,14 @@ public class OutputFrameController {
         this.roundsLeft = Integer.parseInt(rounds);
         this.isBotFirst = isBotFirst;
         this.allBotMode = allBotMode;
-
+        this.playerXTurn = !isBotFirst;
         // for Bot vs Bot
         if (allBotMode) {
             // instantiate both bot here
             this.bot = new BotLocalSearch('O');
 
             // TODO: change this to minimax bot instead
-            this.extraBot = new BotLocalSearch('X');
+            this.extraBot = new BotMinimaxAlphaBethaPruning('X', 'O');
 
             if (this.isBotFirst) {
                 this.moveBot();
@@ -100,9 +100,9 @@ public class OutputFrameController {
                 this.bot = new BotLocalSearch('O'); // Local Search bot
             } else {
                 // TODO: change this to minimax bot instead
-                this.bot = new BotLocalSearch('O'); // Minimax bot
+                this.bot = new BotMinimaxAlphaBethaPruning('O', 'X'); // Minimax bot
             }
-            this.playerXTurn = !isBotFirst;
+
             if (this.isBotFirst) {
                 this.moveBot();
             }
@@ -246,7 +246,7 @@ public class OutputFrameController {
                 }
 
                 if (this.allBotMode) {
-                    this.wait(1, this::moveBot); // add 1 second delay to avoid flickers
+                    this.wait(1, this::moveExtraBot); // add 1 second delay to avoid flickers
                 }
             }
         }
