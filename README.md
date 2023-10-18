@@ -77,7 +77,13 @@ You can make the Bot start first.
   <li>Modified by ITB Graphics and AI Lab Assistant 2020</li>
 </ul>
 
-
+## Rebuilt & Modified by
+| Name                | NIM      |
+|---------------------|----------|
+| Wilson Tansil       | 13521054 |
+| Bill Clinton        | 13521064 |
+| Eugene Yap Jin Quan | 13521074 |
+| Jimly Firdaus       | 13521102 |
 
 
 
