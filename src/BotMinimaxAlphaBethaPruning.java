@@ -1,10 +1,8 @@
 import java.util.PriorityQueue;
 
 public class BotMinimaxAlphaBethaPruning implements Bot {
-    private char botChar;
-    private char nonBotChar;
-    private int minDepth = 3;
-    private int maxDepth = 10;
+    private final char botChar;
+    private final char nonBotChar;
     private double numberOfEmptyCoordinateInit = 0;
 
     public BotMinimaxAlphaBethaPruning(char givenChar, char nonBotChar) {
@@ -199,7 +197,9 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
         return move;
     }
 
-    private int maximumDepthInCertainState(char[][] board) {
+    private int maximumDepthInCertainState() {
+        int maxDepth = 10;
+        int minDepth = 3;
         return (int) Math.floor(minDepth + (maxDepth - minDepth) * (1 - Math.min(1, Math.max(0, numberOfEmptyCoordinateInit / (MAX_COL_MOVEMENT_ALLOWED * MAX_ROW_MOVEMENT_ALLOWED)))));
     }
 
@@ -277,13 +277,14 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
     }
 
     private int minimax(char[][] board, int depth, boolean isMaximizing, int alpha, int beta) {
-        if (isFullyFilled(board) || depth == this.maximumDepthInCertainState(board)) {
+        if (isFullyFilled(board) || depth == this.maximumDepthInCertainState()) {
             return this.evaluateScore(board);
         }
 
+        int bestScore;
+        boolean prunning = false;
         if (isMaximizing) {
-            int bestScore = Integer.MIN_VALUE;
-            boolean prunning = false;
+            bestScore = Integer.MIN_VALUE;
             for (int i = 0; i < MAX_ROW_MOVEMENT_ALLOWED; i++) {
                 for (int j = 0; j < MAX_COL_MOVEMENT_ALLOWED; j++) {
                     if (this.isEmptyCoordinate(i, j, board)) {
@@ -302,10 +303,8 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
                     break;
                 }
             }
-            return bestScore;
         } else {
-            int bestScore = Integer.MAX_VALUE;
-            boolean prunning = false;
+            bestScore = Integer.MAX_VALUE;
             for (int i = 0; i < MAX_ROW_MOVEMENT_ALLOWED; i++) {
                 for (int j = 0; j < MAX_COL_MOVEMENT_ALLOWED; j++) {
                     if (this.isEmptyCoordinate(i, j, board)) {
@@ -324,15 +323,15 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
                     break;
                 }
             }
-            return bestScore;
         }
+        return bestScore;
     }
 
     @Override
     public int[] move(char[][] board) {
         System.out.println("-----------------------------------Minimax---------------------------------");
         this.numberOfEmptyCoordinateInit = this.numberOfEmptyCoordinate(board);
-        System.out.println("This is maximum depth in certain state: " + this.maximumDepthInCertainState(board));
+        System.out.println("This is maximum depth in certain state: " + this.maximumDepthInCertainState());
         Tuple<Integer, Integer> bestMove = this.bestMove(board);
         System.out.println("This is the best move: " + bestMove);
         return new int[]{bestMove.getFirst(), bestMove.getSecond()};
