@@ -98,7 +98,7 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
         }
     }
 
-    private boolean emptyNeighbor(int i, int j, char[][] board) {
+    private boolean hasEmptyNeighbor(int i, int j, char[][] board) {
         boolean isEmpty = true;
 
         if (i != 0) {
@@ -180,15 +180,17 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
         PriorityQueue<NodeQueueElement> pq = new PriorityQueue<>();
         for (int i = 0; i < MAX_ROW_MOVEMENT_ALLOWED; i++) {
             for (int j = 0; j < MAX_COL_MOVEMENT_ALLOWED; j++) {
-                if (isEmptyCoordinate(i, j, checkBoard) && !emptyNeighbor(i, j, checkBoard)) {
+                if (isEmptyCoordinate(i, j, checkBoard) && !hasEmptyNeighbor(i, j, checkBoard)) {
+                    // filters isolated tiles from being searched
                     if (countSurroundingEnemyTile(i, j, checkBoard) != 0) {
+                        // prioritize tiles near enemy marks
                         checkBoard[i][j] = this.botChar;
                         pq.add(new NodeQueueElement(countSurroundingEnemyTile(i, j, checkBoard), checkBoard, 0, false, alpha, beta, i, j));
                     }
                 }
             }
         }
-        System.out.println("This is empty validation " + pq.isEmpty());
+        System.out.println("Tiles surrounded by enemy marks not found: " + pq.isEmpty());
         if (pq.isEmpty()) {
             for (int i = 0; i < MAX_ROW_MOVEMENT_ALLOWED; i++) {
                 for (int j = 0; j < MAX_COL_MOVEMENT_ALLOWED; j++) {
@@ -201,7 +203,7 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
             }
         }
 
-        System.out.println("This is second empty validation " + pq.isEmpty());
+        System.out.println("No valid moves queued: " + pq.isEmpty());
         while (!pq.isEmpty()) {
             NodeQueueElement n = pq.poll();
 
