@@ -45,7 +45,7 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
 
 
     private static class NodeQueueElement implements Comparable<NodeQueueElement> {
-        private int priority;
+        private final int priority;
         public char[][] board;
         public int depth;
         public boolean isMaximizing;
@@ -68,13 +68,7 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
 
         @Override
         public int compareTo(NodeQueueElement o) {
-            if (this.priority < o.priority) {
-                return 1;
-            } else if (this.priority == o.priority) {
-                return 0;
-            } else {
-                return -1;
-            }
+            return Integer.compare(o.priority, this.priority);
         }
     }
 
