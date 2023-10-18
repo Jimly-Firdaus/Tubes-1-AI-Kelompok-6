@@ -87,7 +87,6 @@ public class OutputFrameController {
             // instantiate both bot here
             this.bot = new BotLocalSearch('O');
 
-            // TODO: change this to minimax bot instead
             this.extraBot = new BotMinimaxAlphaBethaPruning('X', 'O');
 
             if (this.isBotFirst) {
@@ -100,7 +99,6 @@ public class OutputFrameController {
             if (botType.equals("Local Search")) {
                 this.bot = new BotLocalSearch('O'); // Local Search bot
             } else {
-                // TODO: change this to minimax bot instead
                 this.bot = new BotMinimaxAlphaBethaPruning('O', 'X'); // Minimax bot
             }
             if (this.isBotFirst) {
