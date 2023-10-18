@@ -10,6 +10,7 @@ The “Adjacency” program was designed as an interactive and strategic board g
 
 The initial game starts with 4 X’s in the bottom left corner and 4 O’s in the top right corner.  The first player will begin by placing an X on an empty square (through clicking).  In turn, all O’s that are on adjacent squares are then replaced with X’s.  Play will continue with the second player taking his turn by placing an O on an empty square.  In turn, all X’s that are on adjacent squares are then replaced with O’s.
 
+In this project, two bots are implemented. One bots uses **local search algorithm (simulated annealing variant)**, and the other uses **minimax alpha-beta pruning algorithm**. Available game modes are Human Vs Bot and Bot Vs Bot.
 <hr>
 
 ### Installation (IntelliJ)
