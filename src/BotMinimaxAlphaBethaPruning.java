@@ -44,13 +44,13 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
 
     private static class NodeQueueElement implements Comparable<NodeQueueElement> {
         private final int priority;
-        public char[][] board;
-        public int depth;
-        public boolean isMaximizing;
-        public int alpha;
-        public int beta;
-        public int i;
-        public int j;
+        private final char[][] board;
+        private final int depth;
+        private final boolean isMaximizing;
+        private final int alpha;
+        private final int beta;
+        private final int i;
+        private final int j;
 
 
         public NodeQueueElement(int priority, char[][] board, int depth, boolean isMaximizing, int alpha, int beta, int i, int j) {
@@ -67,6 +67,34 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
         @Override
         public int compareTo(NodeQueueElement o) {
             return Integer.compare(o.priority, this.priority);
+        }
+
+        public char[][] getBoard() {
+            return board;
+        }
+
+        public int getDepth() {
+            return depth;
+        }
+
+        public boolean isMaximizing() {
+            return isMaximizing;
+        }
+
+        public int getAlpha() {
+            return alpha;
+        }
+
+        public int getBeta() {
+            return beta;
+        }
+
+        public int getI() {
+            return i;
+        }
+
+        public int getJ() {
+            return j;
         }
     }
 
@@ -177,10 +205,10 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
         while (!pq.isEmpty()) {
             NodeQueueElement n = pq.poll();
 
-            score = this.minimax(n.board, n.depth, n.isMaximizing, n.alpha, n.beta);
-            System.out.println(n.i + " " + n.j + " " + score);
+            score = this.minimax(n.getBoard(), n.getDepth(), n.isMaximizing(), n.getAlpha(), n.getBeta());
+            System.out.println(n.getI() + " " + n.getJ() + " " + score);
 
-            checkBoard[n.i][n.j] = ' ';
+            checkBoard[n.getI()][n.getJ()] = ' ';
             if (score > bestScore) {
                 bestScore = score;
                 alpha = Math.max(alpha, bestScore);
@@ -188,8 +216,8 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
                     pq.clear();
                     break;
                 } else {
-                    move.setFirst(n.i);
-                    move.setSecond(n.j);
+                    move.setFirst(n.getI());
+                    move.setSecond(n.getJ());
                 }
             }
         }
