@@ -20,8 +20,6 @@ public class BotLocalSearch implements Bot {
             return 1.0;
         }
         double probability = Math.exp((-1) * (newScore - currentScore) / temperature);
-        System.out.println(probability);
-        System.out.println("T: " + this.temperature);
         return probability;
     }
 
@@ -72,23 +70,15 @@ public class BotLocalSearch implements Bot {
 
             // if found good neighbor
             if (evaluation > currentScore + 1) {
-                System.out.println("eval: " + evaluation);
-                System.out.println("cur: " + currentScore);
-                System.out.println("NYAMMM");
                 return successors.get(randomPoint);
             }
 
             // if found bad neighbor
             if (this.moveAcceptanceProbability(currentScore, evaluation,
                     this.temperature) > MOVE_THRESHOLD_PROBABILITY) {
-                System.out.println("eval: " + evaluation);
-                System.out.println("cur: " + currentScore);
-                System.out.println("Baddie");
                 return successors.get(randomPoint);
             }
         }
-
-        System.out.println("Random HEHE");
 
         int randomPoint = rand.nextInt((!successors.isEmpty()) ? successors.size() : 1);
         return successors.get(randomPoint);
@@ -115,17 +105,6 @@ public class BotLocalSearch implements Bot {
                 }
             }
         }
-
-        for (int i1 = 0; i1 < MAX_ROW_MOVEMENT_ALLOWED; i1++) {
-            for (int j1 = 0; j1 < MAX_COL_MOVEMENT_ALLOWED; j1++) {
-                if (j1 == 0) {
-                    System.out.print("| ");
-                }
-                System.out.print(newBoard[i1][j1] + " | ");
-            }
-            System.out.println("\n---------------------------------");
-        }
-        System.out.println();
 
         return newBoard;
     }
