@@ -361,7 +361,7 @@ public class BotMinimaxAlphaBethaPruning implements Bot {
     public int[] move(char[][] board) {
         System.out.println("-----------------------------------Minimax---------------------------------");
         this.numberOfEmptyCoordinateInit = this.numberOfEmptyCoordinate(board);
-        System.out.println("This is maximum depth in certain state: " + this.maximumDepthInCertainState());
+        System.out.println("This is maximum depth in current state: " + this.maximumDepthInCertainState());
         Tuple<Integer, Integer> bestMove = this.bestMove(board);
         System.out.println("This is the best move: " + bestMove);
         return new int[]{bestMove.getFirst(), bestMove.getSecond()};

@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class BotLocalSearch implements Bot {
-    private char botChar;
+    private final char botChar;
     private double temperature;
 
-    private final double MOVE_THRESHOLD_PROBABILITY = 0.5;
-    private final double TEMPERATURE_RATE_DECREASE = 0.9;
+    private static final double MOVE_THRESHOLD_PROBABILITY = 0.5;
+    private static final double TEMPERATURE_RATE_DECREASE = 0.9;
 
     public BotLocalSearch(char givenChar) {
         this.botChar = givenChar;
@@ -19,9 +19,10 @@ public class BotLocalSearch implements Bot {
         if (newScore > currentScore + 1) {
             return 1.0;
         }
-        System.out.println(Math.exp((-1) * (newScore - currentScore) / temperature));
+        double probability = Math.exp((-1) * (newScore - currentScore) / temperature);
+        System.out.println(probability);
         System.out.println("T: " + this.temperature);
-        return Math.exp((-1) * (newScore - currentScore) / temperature);
+        return probability;
     }
 
     private int evaluate(char[][] checkedBoard, char checkChar) {
@@ -39,19 +40,9 @@ public class BotLocalSearch implements Bot {
 
     public int[] move(char[][] board) {
         long startTime = System.currentTimeMillis(); // get the start time
-        // for (int i = 0; i < MAX_ROW_MOVEMENT_ALLOWED; i++) {
-        // for (int j = 0; j < MAX_COL_MOVEMENT_ALLOWED; j++) {
-        // if (j == 0) {
-        // System.out.print("| ");
-        // }
-        // System.out.print(board[i][j] + " | ");
-        // }
-        // System.out.println("\n---------------------------------");
-        // }
-        // System.out.println();
 
         int currentScore = this.evaluate(board, this.botChar);
-        List<int[]> successors = new ArrayList<int[]>();
+        List<int[]> successors = new ArrayList<>();
 
         // invoke all successsors
         for (int i = 0; i < MAX_ROW_MOVEMENT_ALLOWED; i++) {
@@ -77,7 +68,7 @@ public class BotLocalSearch implements Bot {
 
             int evaluation = this.evaluate(modifiedBoard, this.botChar);
 
-            this.temperature *= this.TEMPERATURE_RATE_DECREASE;
+            this.temperature *= TEMPERATURE_RATE_DECREASE;
 
             // if found good neighbor
             if (evaluation > currentScore + 1) {
@@ -89,7 +80,7 @@ public class BotLocalSearch implements Bot {
 
             // if found bad neighbor
             if (this.moveAcceptanceProbability(currentScore, evaluation,
-                    this.temperature) > this.MOVE_THRESHOLD_PROBABILITY) {
+                    this.temperature) > MOVE_THRESHOLD_PROBABILITY) {
                 System.out.println("eval: " + evaluation);
                 System.out.println("cur: " + currentScore);
                 System.out.println("Baddie");
@@ -99,7 +90,7 @@ public class BotLocalSearch implements Bot {
 
         System.out.println("Random HEHE");
 
-        int randomPoint = rand.nextInt((successors.size() > 0) ? successors.size() : 1);
+        int randomPoint = rand.nextInt((!successors.isEmpty()) ? successors.size() : 1);
         return successors.get(randomPoint);
     }
 
